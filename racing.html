@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏎️ 超級賽車大冒險 - Mario Kart Style Racing</title>
+    <link rel="stylesheet" href="racing.css">
+</head>
+<body>
+    <!-- 背景粒子效果 -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- 主菜单 -->
+    <div class="menu-screen" id="menuScreen">
+        <div class="menu-container">
+            <div class="game-title">
+                <h1>🏎️ 超級賽車</h1>
+                <p class="game-subtitle">Mario Kart Style Racing Game</p>
+            </div>
+            
+            <div class="menu-content">
+                <div class="character-selection">
+                    <h2>選擇你的賽車手</h2>
+                    <div class="characters-grid">
+                        <div class="character-card active" data-character="speed">
+                            <div class="character-avatar">🏎️</div>
+                            <h3>速度型</h3>
+                            <div class="stats">
+                                <div class="stat-bar">
+                                    <span>速度</span>
+                                    <div class="bar"><div class="fill" style="width: 90%"></div></div>
+                                </div>
+                                <div class="stat-bar">
+                                    <span>操控</span>
+                                    <div class="bar"><div class="fill" style="width: 60%"></div></div>
+                                </div>
+                                <div class="stat-bar">
+                                    <span>加速</span>
+                                    <div class="bar"><div class="fill" style="width: 70%"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="character-card" data-character="balanced">
+                            <div class="character-avatar">🚗</div>
+                            <h3>平衡型</h3>
+                            <div class="stats">
+                                <div class="stat-bar">
+                                    <span>速度</span>
+                                    <div class="bar"><div class="fill" style="width: 75%"></div></div>
+                                </div>
+                                <div class="stat-bar">
+                                    <span>操控</span>
+                                    <div class="bar"><div class="fill" style="width: 75%"></div></div>
+                                </div>
+                                <div class="stat-bar">
+                                    <span>加速</span>
+                                    <div class="bar"><div class="fill" style="width: 75%"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="character-card" data-character="handling">
+                            <div class="character-avatar">🏁</div>
+                            <h3>操控型</h3>
+                            <div class="stats">
+                                <div class="stat-bar">
+                                    <span>速度</span>
+                                    <div class="bar"><div class="fill" style="width: 60%"></div></div>
+                                </div>
+                                <div class="stat-bar">
+                                    <span>操控</span>
+                                    <div class="bar"><div class="fill" style="width: 90%"></div></div>
+                                </div>
+                                <div class="stat-bar">
+                                    <span>加速</span>
+                                    <div class="bar"><div class="fill" style="width: 80%"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="track-selection">
+                    <h2>選擇賽道</h2>
+                    <div class="tracks-grid">
+                        <div class="track-card active" data-track="city">
+                            <div class="track-preview">🌆</div>
+                            <h3>城市賽道</h3>
+                            <p>難度: ⭐⭐</p>
+                        </div>
+                        <div class="track-card" data-track="desert">
+                            <div class="track-preview">🏜️</div>
+                            <h3>沙漠賽道</h3>
+                            <p>難度: ⭐⭐⭐</p>
+                        </div>
+                        <div class="track-card" data-track="mountain">
+                            <div class="track-preview">⛰️</div>
+                            <h3>山地賽道</h3>
+                            <p>難度: ⭐⭐⭐⭐</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="menu-buttons">
+                    <button class="menu-btn start-btn" id="startRaceBtn">
+                        <span class="btn-icon">🏁</span>
+                        <span>開始比賽</span>
+                    </button>
+                    <button class="menu-btn" id="tutorialBtn">
+                        <span class="btn-icon">❓</span>
+                        <span>遊戲說明</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 遊戲界面 -->
+    <div class="game-screen hidden" id="gameScreen">
+        <!-- 頂部HUD -->
+        <div class="top-hud">
+            <div class="hud-left">
+                <div class="lap-counter">
+                    <span class="label">圈數</span>
+                    <span class="value"><span id="currentLap">1</span>/3</span>
+                </div>
+                <div class="position-display">
+                    <span class="position-number" id="position">1</span>
+                    <span class="position-suffix">st</span>
+                </div>
+            </div>
+            
+            <div class="hud-center">
+                <div class="timer-display">
+                    <span class="timer-label">⏱️</span>
+                    <span class="timer-value" id="raceTimer">00:00.000</span>
+                </div>
+                <div class="countdown" id="countdown">3</div>
+            </div>
+            
+            <div class="hud-right">
+                <div class="speed-display">
+                    <span class="speed-value" id="speedometer">0</span>
+                    <span class="speed-unit">km/h</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 道具欄 -->
+        <div class="item-box">
+            <div class="item-display" id="itemDisplay">
+                <div class="no-item">按空格使用</div>
+            </div>
+        </div>
+        
+        <!-- 小地圖 -->
+        <div class="minimap">
+            <canvas id="minimapCanvas" width="150" height="150"></canvas>
+        </div>
+        
+        <!-- 主遊戲畫布 -->
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- 排名列表 -->
+        <div class="rankings-panel">
+            <h3>🏆 排名</h3>
+            <div class="rankings-list" id="rankingsList">
+                <div class="ranking-item player">
+                    <span class="rank">1</span>
+                    <span class="name">你</span>
+                    <span class="time">00:00.000</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 遊戲暫停選單 -->
+        <div class="pause-menu hidden" id="pauseMenu">
+            <div class="pause-content">
+                <h2>⏸️ 遊戲暫停</h2>
+                <button class="pause-btn" id="resumeBtn">繼續比賽</button>
+                <button class="pause-btn" id="restartBtn">重新開始</button>
+                <button class="pause-btn" id="backToMenuBtn">返回主選單</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 比賽結束界面 -->
+    <div class="result-screen hidden" id="resultScreen">
+        <div class="result-container">
+            <div class="result-header">
+                <div class="trophy-animation" id="trophyAnimation">🏆</div>
+                <h1 class="result-title" id="resultTitle">勝利!</h1>
+                <p class="result-position">第 <span id="finalPosition">1</span> 名</p>
+            </div>
+            
+            <div class="result-stats">
+                <div class="stat-card">
+                    <span class="stat-icon">⏱️</span>
+                    <span class="stat-label">總時間</span>
+                    <span class="stat-value" id="finalTime">00:00.000</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">🏎️</span>
+                    <span class="stat-label">最高速度</span>
+                    <span class="stat-value"><span id="maxSpeed">0</span> km/h</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">⭐</span>
+                    <span class="stat-label">道具使用</span>
+                    <span class="stat-value" id="itemsUsed">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">🎯</span>
+                    <span class="stat-label">最佳圈速</span>
+                    <span class="stat-value" id="bestLap">00:00.000</span>
+                </div>
+            </div>
+            
+            <div class="result-actions">
+                <button class="result-btn primary" id="raceAgainBtn">
+                    <span>再來一局</span>
+                </button>
+                <button class="result-btn" id="backMenuBtn">
+                    <span>返回主選單</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 教程界面 -->
+    <div class="tutorial-screen hidden" id="tutorialScreen">
+        <div class="tutorial-container">
+            <h2>🎮 遊戲說明</h2>
+            <div class="tutorial-content">
+                <div class="tutorial-section">
+                    <h3>⌨️ 操作方式</h3>
+                    <div class="controls-grid">
+                        <div class="control-item">
+                            <kbd>↑</kbd>
+                            <span>加速</span>
+                        </div>
+                        <div class="control-item">
+                            <kbd>↓</kbd>
+                            <span>刹車/倒退</span>
+                        </div>
+                        <div class="control-item">
+                            <kbd>←</kbd>
+                            <span>左轉</span>
+                        </div>
+                        <div class="control-item">
+                            <kbd>→</kbd>
+                            <span>右轉</span>
+                        </div>
+                        <div class="control-item">
+                            <kbd>Space</kbd>
+                            <span>使用道具</span>
+                        </div>
+                        <div class="control-item">
+                            <kbd>P</kbd>
+                            <span>暫停</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tutorial-section">
+                    <h3>🎁 道具說明</h3>
+                    <div class="items-grid">
+                        <div class="item-desc">
+                            <span class="item-icon">🚀</span>
+                            <div>
+                                <strong>加速道具</strong>
+                                <p>獲得短時間的極速加速</p>
+                            </div>
+                        </div>
+                        <div class="item-desc">
+                            <span class="item-icon">⭐</span>
+                            <div>
+                                <strong>無敵星星</strong>
+                                <p>短時間內無敵狀態</p>
+                            </div>
+                        </div>
+                        <div class="item-desc">
+                            <span class="item-icon">💣</span>
+                            <div>
+                                <strong>炸彈</strong>
+                                <p>向前方發射炸彈</p>
+                            </div>
+                        </div>
+                        <div class="item-desc">
+                            <span class="item-icon">🛡️</span>
+                            <div>
+                                <strong>護盾</strong>
+                                <p>保護自己免受攻擊</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tutorial-section">
+                    <h3>🏁 遊戲規則</h3>
+                    <ul class="rules-list">
+                        <li>完成3圈比賽，爭取第一名</li>
+                        <li>通過問號方塊獲得道具</li>
+                        <li>使用道具超越對手</li>
+                        <li>小心避開障礙物和賽道邊緣</li>
+                        <li>衝刺加速帶可獲得短暫加速</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="menu-btn" id="closeTutorialBtn">知道了</button>
+        </div>
+    </div>
+    
+    <script src="racing.js"></script>
+</body>
+</html>
