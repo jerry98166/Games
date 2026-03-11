@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Noto Sans TC', 'Microsoft JhengHei', '微軟正黑體', 'PingFang TC', 'Apple LiGothic Medium', sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     padding: 20px;
@@ -14,6 +14,8 @@ body {
     align-items: center;
     animation: gradientShift 10s ease infinite;
     background-size: 200% 200%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 @keyframes gradientShift {
@@ -35,10 +37,12 @@ body {
 }
 
 .header h1 {
-    font-size: 3em;
-    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    margin-bottom: 10px;
+    font-size: 3.5em;
+    font-weight: 900;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 0 40px rgba(255, 255, 255, 0.2);
+    margin-bottom: 15px;
     animation: titleBounce 2s ease-in-out infinite;
+    letter-spacing: 2px;
 }
 
 @keyframes titleBounce {
@@ -47,8 +51,38 @@ body {
 }
 
 .subtitle {
-    font-size: 1.2em;
-    opacity: 0.9;
+    font-size: 1.3em;
+    opacity: 0.95;
+    font-weight: 500;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+}
+
+.game-badges {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.badge {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 500;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.badge:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 .game-wrapper {
@@ -85,9 +119,11 @@ body {
 .info-box h3 {
     color: #667eea;
     margin-bottom: 15px;
-    font-size: 1.2em;
-    border-bottom: 2px solid #667eea;
-    padding-bottom: 10px;
+    font-size: 1.3em;
+    font-weight: 700;
+    border-bottom: 3px solid #667eea;
+    padding-bottom: 12px;
+    letter-spacing: 1px;
 }
 
 /* 统计信息 */
@@ -105,26 +141,32 @@ body {
 
 .stat-label {
     color: #666;
-    font-size: 0.95em;
+    font-size: 1em;
+    font-weight: 500;
 }
 
 .stat-value {
-    font-size: 1.5em;
-    font-weight: bold;
+    font-size: 1.8em;
+    font-weight: 900;
     color: #667eea;
     animation: pulse 0.3s ease;
+    font-family: 'Poppins', 'Noto Sans TC', sans-serif;
 }
 
 /* 进度条 */
 .goal-text {
-    color: #666;
-    margin-bottom: 10px;
-    font-size: 0.95em;
+    color: #555;
+    margin-bottom: 15px;
+    font-size: 1.05em;
+    font-weight: 500;
+    text-align: center;
 }
 
 .goal-text span {
     color: #667eea;
-    font-weight: bold;
+    font-weight: 900;
+    font-size: 1.3em;
+    font-family: 'Poppins', sans-serif;
 }
 
 .progress-bar {
@@ -197,15 +239,19 @@ body {
 }
 
 .overlay-content h2 {
-    font-size: 2.5em;
+    font-size: 2.8em;
     margin-bottom: 20px;
     text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    font-weight: 900;
+    letter-spacing: 2px;
 }
 
 .overlay-content p {
-    font-size: 1.2em;
+    font-size: 1.3em;
     margin-bottom: 30px;
-    opacity: 0.9;
+    opacity: 0.95;
+    font-weight: 500;
+    letter-spacing: 1px;
 }
 
 /* 按钮样式 */
@@ -289,9 +335,13 @@ body {
 
 .hint-text {
     text-align: center;
-    color: #999;
-    font-size: 0.85em;
-    margin-top: 10px;
+    color: #888;
+    font-size: 0.9em;
+    margin-top: 12px;
+    font-weight: 500;
+    padding: 8px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 8px;
 }
 
 /* 操作说明 */
@@ -322,10 +372,100 @@ body {
 
 .control-item span:last-child {
     color: #666;
-    font-size: 0.9em;
+    font-size: 0.95em;
+    font-weight: 500;
 }
 
-/* 移动端控制 */
+/* 新增提示框樣式 */
+.tips-box, .scoring-box {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+}
+
+.tips-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.tip {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    font-size: 0.9em;
+    color: #555;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-left: 3px solid #667eea;
+}
+
+.tip:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateX(5px);
+}
+
+/* 計分規則樣式 */
+.scoring-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.score-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.score-item:hover {
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(1.03);
+}
+
+.score-item.special {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 165, 0, 0.3));
+    border: 2px solid #FFD700;
+    font-weight: 700;
+}
+
+.score-item.special:hover {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.5), rgba(255, 165, 0, 0.5));
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+}
+
+.score-name {
+    font-size: 1em;
+    font-weight: 600;
+    color: #555;
+}
+
+.score-points {
+    font-size: 1.4em;
+    font-weight: 900;
+    color: #667eea;
+    font-family: 'Poppins', sans-serif;
+}
+
+.score-item.special .score-points {
+    color: #FF8C00;
+    font-size: 1.6em;
+}
+
+.scoring-note {
+    margin-top: 15px;
+    text-align: center;
+    color: #888;
+    font-size: 0.85em;
+    font-style: italic;
+    font-weight: 500;
+}
+
+/* 移動端控制 */
 .mobile-controls {
     display: none;
     flex-direction: column;

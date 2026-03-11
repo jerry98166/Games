@@ -3,20 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>俄羅斯方塊 - Tetris</title>
+    <title>🎮 俄羅斯方塊 - 經典益智遊戲 | Tetris</title>
+    <meta name="description" content="經典俄羅斯方塊遊戲，支援多種操作模式，立即開始挑戰！">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>🎮 俄羅斯方塊</h1>
-            <p class="subtitle">經典益智遊戲</p>
+            <p class="subtitle">經典益智遊戲 · 永恆的樂趣</p>
+            <div class="game-badges">
+                <span class="badge">✨ 完全免費</span>
+                <span class="badge">🎯 無廣告</span>
+                <span class="badge">📱 支援觸控</span>
+            </div>
         </div>
         
         <div class="game-wrapper">
-            <!-- 左侧信息面板 -->
+            <!-- 左側資訊面板 -->
             <div class="side-panel left-panel">
-                <div class="info-box">
+                <div class="info-box stats-box">
                     <h3>📊 遊戲統計</h3>
                     <div class="stat-item">
                         <span class="stat-label">分數</span>
@@ -36,24 +45,33 @@
                     </div>
                 </div>
 
-                <div class="info-box">
-                    <h3>🎯 目標</h3>
-                    <p class="goal-text">消除 <span id="goalLines">10</span> 行升級！</p>
+                <div class="info-box goal-box">
+                    <h3>🎯 升級目標</h3>
+                    <p class="goal-text">再消除 <span id="goalLines">10</span> 行即可升級！</p>
                     <div class="progress-bar">
                         <div class="progress-fill" id="progressBar"></div>
                     </div>
                 </div>
+
+                <div class="info-box tips-box">
+                    <h3>💡 遊戲提示</h3>
+                    <div class="tips-content">
+                        <p class="tip">💎 同時消除4行獲得最高分</p>
+                        <p class="tip">⚡ 善用幽靈方塊預覽</p>
+                        <p class="tip">🎯 保存長條等待機會</p>
+                    </div>
+                </div>
             </div>
 
-            <!-- 中间游戏区域 -->
+            <!-- 中間遊戲區域 -->
             <div class="game-container">
                 <div class="game-board-wrapper">
                     <canvas id="gameBoard" width="300" height="600"></canvas>
                     <div class="game-overlay" id="gameOverlay">
                         <div class="overlay-content">
-                            <h2 id="overlayTitle">准备开始</h2>
-                            <p id="overlayMessage">按 空格键 或 点击开始按钮</p>
-                            <button class="start-button" id="startButton">开始游戏</button>
+                            <h2 id="overlayTitle">準備開始</h2>
+                            <p id="overlayMessage">按下 Space 空格鍵 或 點擊開始按鈕</p>
+                            <button class="start-button" id="startButton">🎮 開始遊戲</button>
                         </div>
                     </div>
                 </div>
@@ -66,21 +84,21 @@
                 </div>
             </div>
 
-            <!-- 右侧信息面板 -->
+            <!-- 右側資訊面板 -->
             <div class="side-panel right-panel">
-                <div class="info-box">
-                    <h3>⏭️ 下一個</h3>
+                <div class="info-box next-box">
+                    <h3>⏭️ 下一個方塊</h3>
                     <canvas id="nextPiece" width="120" height="120"></canvas>
                 </div>
 
-                <div class="info-box">
-                    <h3>💾 保存的</h3>
+                <div class="info-box hold-box">
+                    <h3>💾 已保存方塊</h3>
                     <canvas id="holdPiece" width="120" height="120"></canvas>
-                    <p class="hint-text">按 C 鍵保存方塊</p>
+                    <p class="hint-text">⌨️ 按 C 鍵保存當前方塊</p>
                 </div>
 
-                <div class="info-box">
-                    <h3>⌨️ 操作說明</h3>
+                <div class="info-box controls-box">
+                    <h3>⌨️ 鍵盤操作</h3>
                     <div class="controls-list">
                         <div class="control-item">
                             <span class="key">←→</span>
@@ -108,10 +126,33 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="info-box scoring-box">
+                    <h3>🏆 計分規則</h3>
+                    <div class="scoring-list">
+                        <div class="score-item">
+                            <span class="score-name">單行</span>
+                            <span class="score-points">100</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-name">雙行</span>
+                            <span class="score-points">300</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-name">三行</span>
+                            <span class="score-points">500</span>
+                        </div>
+                        <div class="score-item special">
+                            <span class="score-name">四行</span>
+                            <span class="score-points">800</span>
+                        </div>
+                    </div>
+                    <p class="scoring-note">✨ 分數會隨等級倍增</p>
+                </div>
             </div>
         </div>
 
-        <!-- 移動端控制按鈕 -->
+        <!-- 移動端觸控按鈕 -->
         <div class="mobile-controls">
             <div class="mobile-row">
                 <button class="mobile-btn" id="mobileRotate">⟲</button>
