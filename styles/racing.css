@@ -18,11 +18,88 @@
     box-sizing: border-box;
 }
 
+/* ==================== 遊戲導航條 ==================== */
+.racing-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(15, 15, 30, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 1rem 2rem;
+    z-index: 1001;
+    border-bottom: 2px solid rgba(240, 147, 251, 0.2);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-left, .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.back-btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    color: white;
+    text-decoration: none;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(240, 147, 251, 0.3);
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.back-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(240, 147, 251, 0.5);
+}
+
+.nav-center {
+    flex: 1;
+    text-align: center;
+}
+
+.header-title {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.theme-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(240, 147, 251, 0.3);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.theme-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(240, 147, 251, 0.6);
+}
+
 body {
-    font-family: 'Segoe UI', 'Arial', sans-serif;
+    font-family: 'Noto Sans TC', 'Segoe UI', 'Arial', sans-serif;
     overflow: hidden;
     background: #0a0e27;
     color: white;
+    padding-top: 70px;
 }
 
 .hidden {
@@ -68,6 +145,7 @@ body {
     align-items: center;
     z-index: 100;
     padding: 20px;
+    padding-top: 80px;
 }
 
 .menu-container {

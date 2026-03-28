@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 西蒙說 - Simon Says</title>
+    <meta name="description" content="跟著節奏，重複顏色序列">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/globals.css">
+    <link rel="stylesheet" href="../styles/mobile-optimize.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%);
+            color: #fff;
+            font-family: 'Noto Sans TC', sans-serif;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .header { margin-bottom: 2rem; }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 0.5rem 0;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            color: #aaa;
+            font-size: 1rem;
+        }
+        
+        .game-display {
+            background: rgba(240, 147, 251, 0.1);
+            border: 2px solid #f093fb;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .simon-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 1.5rem 0;
+        }
+        
+        .simon-pads {
+            display: contents;
+        }
+        
+        .simon-pad {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+            font-size: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s;
+            margin: 0 auto;
+        }
+        
+        .simon-pad.red { background: #ff6b6b; }
+        .simon-pad.blue { background: #4ecdc4; }
+        .simon-pad.green { background: #45b7d1; }
+        .simon-pad.yellow { background: #f9ca24; }
+        
+        .simon-pad.active {
+            transform: scale(0.95);
+            box-shadow: 0 8px 20px rgba(255,255,255,0.3);
+        }
+        
+        .game-info {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .info-box {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            min-width: 120px;
+        }
+        
+        .info-label { font-size: 0.9rem; color: #aaa; }
+        .info-value { font-size: 1.8rem; font-weight: bold; color: #f093fb; margin: 0.5rem 0; }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(240, 147, 251, 0.4);
+        }
+        
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .message { min-height: 2rem; font-size: 1.1rem; color: #f5576c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 西蒙說</h1>
+            <p class="subtitle">跟著節奏，重複顏色序列</p>
+        </div>
+        
+        <div class="game-display">
+            <div class="simon-grid">
+                <div class="simon-pads">
+                    <button class="simon-pad red" data-color="red">🔴</button>
+                    <button class="simon-pad blue" data-color="blue">🔵</button>
+                    <button class="simon-pad green" data-color="green">🟢</button>
+                    <button class="simon-pad yellow" data-color="yellow">🟡</button>
+                </div>
+            </div>
+            
+            <div class="message" id="message">準備好了嗎？按開始遊戲！</div>
+        </div>
+        
+        <div class="game-info">
+            <div class="info-box">
+                <div class="info-label">等級</div>
+                <div class="info-value" id="level">1</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">最高等級</div>
+                <div class="info-value" id="bestLevel">-</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn" id="startBtn">🎮 開始遊戲</button>
+            <button class="control-btn" id="resetBtn">🔄 重新開始</button>
+        </div>
+    </div>
+
+    <script src="../lib/game-utils.js"></script>
+    <script src="../js/simon.js"></script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧱 磚塊破壞者 - 經典遊戲 | Breakout</title>
+    <meta name="description" content="經典破磚遊戲，控制球拍打破磚塊">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="globals.css">
+    <link rel="stylesheet" href="mobile-optimize.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%);
+            color: #fff;
+            font-family: 'Noto Sans TC', sans-serif;
+            padding-top: 80px;
+        }
+        
+        .game-navbar {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            gap: 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        
+        .nav-left { flex: 1; }
+        .nav-center { flex: 1; text-align: center; }
+        .nav-right { flex: 1; text-align: right; }
+        
+        .back-btn { background: rgba(255,255,255,0.2); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; }
+        .header-title { color: white; margin: 0; font-size: 1.5rem; }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            color: #aaa;
+            font-size: 1.1rem;
+            margin: 0.5rem 0 1rem 0;
+        }
+        
+        .stat-box {
+            display: inline-block;
+            background: rgba(168, 237, 234, 0.2);
+            border: 1px solid #a8edea;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            margin: 0.5rem;
+        }
+        
+        .stat-label { font-size: 0.9rem; color: #aaa; }
+        .stat-value { font-size: 1.5rem; font-weight: bold; color: #a8edea; }
+        
+        #gameCanvas {
+            border: 3px solid #a8edea;
+            background: #000;
+            border-radius: 0.5rem;
+            display: block;
+            margin: 2rem auto;
+            max-width: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #333;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(168, 237, 234, 0.4);
+        }
+        
+        .instructions {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+            text-align: left;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        @media (max-width: 768px) {
+            #gameCanvas {
+                max-width: 90vw;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 導航條 -->
+    <nav class="game-navbar">
+        <div class="nav-left">
+            <a href="../index.html" class="back-btn">← 返回主頁</a>
+        </div>
+        <div class="nav-center">
+            <h1 class="header-title">🧱 磚塊破壞者</h1>
+        </div>
+        <div class="nav-right">
+            <button id="soundToggle" class="theme-btn">🔊</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>🧱 磚塊破壞者</h1>
+            <p class="subtitle">經典破磚遊戲，精準操作打破磚塊</p>
+        </div>
+        
+        <div style="text-align: center;">
+            <div class="stat-box">
+                <div class="stat-label">分數</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">等級</div>
+                <div class="stat-value" id="level">1</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">生命</div>
+                <div class="stat-value" id="lives">3</div>
+            </div>
+        </div>
+        
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        
+        <div class="controls">
+            <button class="control-btn" id="startBtn">🎮 開始遊戲</button>
+            <button class="control-btn" id="pauseBtn">⏸️ 暫停</button>
+        </div>
+        
+        <div class="instructions">
+            <h3 style="margin-top: 0; color: #a8edea;">⌨️ 控制方式</h3>
+            <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                <li><strong>方向鍵 ←/→</strong> 或 <strong>A/D鍵</strong> - 左右移動球拍</li>
+                <li><strong>滑鼠移動</strong> - 控制球拍位置（支援）</li>
+                <li><strong>Space</strong> - 發射球</li>
+                <li>打破所有磚塊完成關卡</li>
+                <li>球掉出底部會失去一條生命</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="../js/breakout.js"></script>
+</body>
+</html>

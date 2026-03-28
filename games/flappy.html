@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐦 Flappy Bird - 反應遊戲 | Flappy</title>
+    <meta name="description" content="簡單卻極具難度的反應遊戲">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="globals.css">
+    <link rel="stylesheet" href="mobile-optimize.css">
+    <style>
+        .game-navbar {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            gap: 1rem;
+        }
+        
+        .nav-left, .nav-center, .nav-right { flex: 1; }
+        .nav-center { text-align: center; }
+        .nav-right { text-align: right; }
+        
+        .back-btn, .theme-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover, .theme-btn:hover {
+            background: rgba(255,255,255,0.4);
+        }
+        
+        .header-title { color: white; margin: 0; font-size: 1.5rem; }
+        
+        body {
+            background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%);
+            color: #fff;
+            font-family: 'Noto Sans TC', sans-serif;
+            padding-top: 80px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            color: #aaa;
+            font-size: 1.1rem;
+            margin: 0.5rem 0 1rem 0;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: rgba(245, 87, 108, 0.2);
+            border: 1px solid #f5576c;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            margin: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        #gameCanvas {
+            border: 3px solid #f5576c;
+            background: linear-gradient(to bottom, #87ceeb, #e0f6ff);
+            border-radius: 0.5rem;
+            display: block;
+            margin: 2rem auto;
+            max-width: 100%;
+            cursor: pointer;
+        }
+        
+        .game-info {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+        
+        .info-box {
+            background: rgba(245, 87, 108, 0.1);
+            border: 1px solid #f5576c;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            min-width: 200px;
+        }
+        
+        .info-box h3 {
+            color: #f5576c;
+            margin-top: 0;
+        }
+        
+        .score-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #f5576c;
+            margin: 0.5rem 0;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4);
+        }
+        
+        .instructions {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: left;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .instructions h3 {
+            text-align: center;
+            color: #f5576c;
+        }
+        
+        @media (max-width: 768px) {
+            #gameCanvas {
+                max-width: 90vw;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 導航條 -->
+    <nav class="game-navbar">
+        <div class="nav-left">
+            <a href="../index.html" class="back-btn">← 返回主頁</a>
+        </div>
+        <div class="nav-center">
+            <h1 class="header-title">🐦 Flappy Bird</h1>
+        </div>
+        <div class="nav-right">
+            <button id="soundToggle" class="theme-btn">🔊</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>🐦 Flappy Bird</h1>
+            <p class="subtitle">簡單卻極具難度的反應遊戲</p>
+            <div>
+                <span class="badge">✨ 完全免費</span>
+                <span class="badge">🎯 無廣告</span>
+                <span class="badge">⚡ 快節奏</span>
+            </div>
+        </div>
+        
+        <canvas id="gameCanvas" width="400" height="600"></canvas>
+        
+        <div class="game-info">
+            <div class="info-box">
+                <h3>📊 分數</h3>
+                <div class="score-display" id="score">0</div>
+                <p style="margin: 0; color: #aaa; font-size: 0.9rem;">當前得分</p>
+            </div>
+            <div class="info-box">
+                <h3>🏆 最高分</h3>
+                <div class="score-display" id="highScore">0</div>
+                <p style="margin: 0; color: #aaa; font-size: 0.9rem;">個人紀錄</p>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn" id="startBtn">🎮 開始遊戲</button>
+            <button class="control-btn" id="pauseBtn">⏸️ 暫停</button>
+        </div>
+        
+        <div class="instructions">
+            <h3>🎮 遊戲規則</h3>
+            <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                <li><strong>點擊滑鼠</strong>或<strong>按空格鍵</strong>讓小鳥飛起來</li>
+                <li>躲避<strong>綠色管道</strong>，穿過中間的空隙</li>
+                <li>不要碰到上下邊界或管道</li>
+                <li>每成功穿過一對管道得 1 分</li>
+                <li>遊戲會越來越快 - 考驗您的反應速度！</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="../js/flappy.js"></script>
+</body>
+</html>

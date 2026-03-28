@@ -4,9 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🏎️ 超級賽車大冒險 - Mario Kart Style Racing</title>
-    <link rel="stylesheet" href="racing.css">
+    <link rel="stylesheet" href="../styles/globals.css">
+    <link rel="stylesheet" href="../styles/mobile-optimize.css">
+    <link rel="stylesheet" href="../styles/racing.css">
 </head>
 <body>
+    <!-- 導航條 -->
+    <nav class="racing-navbar">
+        <div class="nav-left">
+            <a href="../index.html" class="back-btn">← 返回主頁</a>
+        </div>
+        <div class="nav-center">
+            <h1 class="header-title">🏎️ 超級賽車</h1>
+        </div>
+        <div class="nav-right">
+            <button id="soundToggle" class="theme-btn">🔊</button>
+        </div>
+    </nav>
+
     <!-- 背景粒子效果 -->
     <div class="particles" id="particles"></div>
     
@@ -312,6 +327,6 @@
         </div>
     </div>
     
-    <script src="racing.js"></script>
+    <script src="../js/racing.js"></script>
 </body>
 </html>

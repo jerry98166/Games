@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔢 2048 - 數字遊戲 | 2048</title>
+    <meta name="description" content="數字合併遊戲，將方塊合併達成2048">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="globals.css">
+    <link rel="stylesheet" href="mobile-optimize.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%);
+            color: #fff;
+            font-family: 'Noto Sans TC', sans-serif;
+            padding: 2rem;
+        }
+        
+        .game-navbar {
+            background: linear-gradient(135deg, #f9ca24 0%, #f0932f 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            gap: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        
+        .nav-left, .nav-center, .nav-right { flex: 1; }
+        .nav-center { text-align: center; }
+        .nav-right { text-align: right; }
+        
+        .back-btn { background: rgba(255,255,255,0.2); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; }
+        .header-title { color: white; margin: 0; font-size: 1.5rem; }
+        
+        .container {
+            max-width: 600px;
+            margin: 100px auto 0;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            background: linear-gradient(135deg, #f9ca24 0%, #f0932f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .game-stats {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .stat-box {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            min-width: 150px;
+        }
+        
+        .stat-label { font-size: 0.9rem; color: #aaa; }
+        .stat-value { font-size: 1.8rem; font-weight: bold; color: #f0932f; margin: 0.5rem 0; }
+        
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin: 2rem auto;
+            background: rgba(200, 150, 100, 0.2);
+            padding: 10px;
+            border-radius: 0.5rem;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .tile {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            font-size: 2rem;
+            transition: all 0.15s;
+            cursor: default;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, #f9ca24 0%, #f0932f 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(240, 147, 47, 0.4);
+        }
+        
+        .instructions {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+        
+        @media (max-width: 768px) {
+            .game-grid {
+                gap: 6px;
+            }
+            
+            .tile {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 導航條 -->
+    <nav class="game-navbar">
+        <div class="nav-left">
+            <a href="../index.html" class="back-btn">← 返回主頁</a>
+        </div>
+        <div class="nav-center">
+            <h1 class="header-title">🔢 2048</h1>
+        </div>
+        <div class="nav-right"></div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>🔢 2048</h1>
+            <p style="color: #aaa; font-size: 1.1rem;">合併方塊達成 2048</p>
+        </div>
+        
+        <div class="game-stats">
+            <div class="stat-box">
+                <div class="stat-label">分數</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">最高分</div>
+                <div class="stat-value" id="highScore">0</div>
+            </div>
+        </div>
+        
+        <div class="game-grid" id="gameGrid"></div>
+        
+        <div class="controls">
+            <button class="control-btn" id="newGameBtn">🎮 新遊戲</button>
+            <button class="control-btn" id="undoBtn">↶ 撤回</button>
+        </div>
+        
+        <div class="instructions">
+            <h3 style="margin-top: 0; color: #f0932f;">⌨️ 操作方式</h3>
+            <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                <li><strong>方向鍵</strong>移動方塊</li>
+                <li>相同數字相碰會合併</li>
+                <li>達到 <strong>2048</strong> 即為勝利</li>
+                <li>可繼續遊戲以達成更高分數</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="../js/game2048.js"></script>
+</body>
+</html>

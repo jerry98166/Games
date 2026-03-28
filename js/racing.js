@@ -829,5 +829,18 @@ class RacingGame {
 
 // ==================== 启动游戏 ====================
 window.addEventListener('DOMContentLoaded', () => {
-    const game = new RacingGame();
+    try {
+        const canvas = document.getElementById('gameCanvas');
+        if (!canvas) {
+            console.error('Canvas element gameCanvas not found');
+            alert('遊戲初始化失敗：缺少遊戲畫布元素');
+            return;
+        }
+        
+        const game = new RacingGame();
+        console.log('Racing game initialized successfully');
+    } catch (error) {
+        console.error('Failed to initialize Racing game:', error);
+        alert('遊戲初始化失敗：' + error.message);
+    }
 });

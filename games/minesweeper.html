@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💣 掃雷 - Minesweeper</title>
+    <meta name="description" content="經典掃雷遊戲，小心踩到地雷">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/globals.css">
+    <link rel="stylesheet" href="../styles/mobile-optimize.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%);
+            color: #fff;
+            font-family: 'Noto Sans TC', sans-serif;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 0.5rem 0;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle { color: #aaa; font-size: 1rem; }
+        
+        .game-info {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .info-box {
+            background: rgba(250, 112, 154, 0.2);
+            border: 1px solid #fa709a;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            min-width: 120px;
+        }
+        
+        .info-label { font-size: 0.9rem; color: #aaa; }
+        .info-value { font-size: 1.8rem; font-weight: bold; color: #fa709a; }
+        
+        .minesweeper-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 4px;
+            background: rgba(250, 112, 154, 0.1);
+            padding: 15px;
+            border-radius: 1rem;
+            margin: 2rem 0;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cell {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 0.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        
+        .cell:hover {
+            transform: scale(0.95);
+        }
+        
+        .cell.revealed {
+            background: rgba(100, 200, 200, 0.3);
+            border-color: #4db8a8;
+        }
+        
+        .cell.mine {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .cell.flag {
+            background: #ffd93d;
+            color: white;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: #333;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(250, 112, 154, 0.4);
+        }
+        
+        .difficulty-selector {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        
+        .difficulty-btn {
+            background: rgba(250, 112, 154, 0.2);
+            color: white;
+            border: 1px solid #fa709a;
+            padding: 0.5rem 1rem;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .difficulty-btn.active {
+            background: #fa709a;
+            border-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💣 掃雷</h1>
+            <p class="subtitle">小心踩到地雷，點擊開啟方塊</p>
+        </div>
+        
+        <div class="game-info">
+            <div class="info-box">
+                <div class="info-label">剩餘地雷</div>
+                <div class="info-value" id="minesLeft">10</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">已標記</div>
+                <div class="info-value" id="flagged">0</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">時間</div>
+                <div class="info-value" id="time">0</div>
+            </div>
+        </div>
+        
+        <div class="difficulty-selector">
+            <button class="difficulty-btn active" data-difficulty="easy">⭐ 簡單</button>
+            <button class="difficulty-btn" data-difficulty="normal">⭐⭐ 普通</button>
+            <button class="difficulty-btn" data-difficulty="hard">⭐⭐⭐ 困難</button>
+        </div>
+        
+        <div class="minesweeper-grid" id="gameGrid"></div>
+        
+        <div class="controls">
+            <button class="control-btn" id="newGameBtn">🎮 新遊戲</button>
+            <p style="font-size: 0.9rem; color: #aaa;">💡 右鍵點擊標記地雷</p>
+        </div>
+    </div>
+
+    <script src="../lib/game-utils.js"></script>
+    <script src="../js/minesweeper.js"></script>
+</body>
+</html>

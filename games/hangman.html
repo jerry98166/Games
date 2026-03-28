@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Hangman 猜字遊戲</title>
+    <meta name="description" content="經典單詞猜測遊戲">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/globals.css">
+    <link rel="stylesheet" href="../styles/mobile-optimize.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%);
+            color: #fff;
+            font-family: 'Noto Sans TC', sans-serif;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 0.5rem 0;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle { color: #aaa; font-size: 1rem; }
+        
+        .game-info {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .info-box {
+            background: rgba(245, 87, 108, 0.2);
+            border: 1px solid #f5576c;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            min-width: 120px;
+        }
+        
+        .info-label { font-size: 0.9rem; color: #aaa; }
+        .info-value { font-size: 1.8rem; font-weight: bold; color: #f5576c; }
+        
+        .hangman-display {
+            font-size: 3rem;
+            margin: 1.5rem 0;
+            min-height: 60px;
+        }
+        
+        .word-display {
+            background: rgba(245, 87, 108, 0.1);
+            border: 2px solid #f5576c;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 1.5rem 0;
+            font-size: 2rem;
+            letter-spacing: 0.3rem;
+            font-weight: bold;
+        }
+        
+        .word-display span {
+            margin: 0 0.2rem;
+        }
+        
+        .alphabet {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+        
+        .letter-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 0.8rem;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            min-width: 35px;
+        }
+        
+        .letter-btn:hover:not(:disabled) {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .letter-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .letter-btn.wrong {
+            background: #ff6b6b;
+            border: 2px solid #ff4444;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4);
+        }
+        
+        .guessed-letters {
+            background: rgba(245, 87, 108, 0.1);
+            border: 1px solid #f5576c;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Hangman</h1>
+            <p class="subtitle">猜單詞，但別猜錯太多次</p>
+        </div>
+        
+        <div class="game-info">
+            <div class="info-box">
+                <div class="info-label">失誤次數</div>
+                <div class="info-value" id="mistakes">0 / 6</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">勝利次數</div>
+                <div class="info-value" id="wins">0</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">類別</div>
+                <div class="info-value" id="category">動物</div>
+            </div>
+        </div>
+        
+        <div class="hangman-display" id="hangman">
+            😊
+        </div>
+        
+        <div class="word-display" id="wordDisplay"></div>
+        
+        <div class="guessed-letters" id="guessedLetters">
+            <strong>已猜測的字母：</strong> <span id="guessList">無</span>
+        </div>
+        
+        <div>
+            <p style="font-size: 0.9rem; color: #aaa; margin: 1rem 0;">💡 選擇下面的字母進行猜測</p>
+        </div>
+        
+        <div class="alphabet" id="alphabet"></div>
+        
+        <div class="controls">
+            <button class="control-btn" id="newGameBtn">🎮 新遊戲</button>
+        </div>
+    </div>
+
+    <script src="../lib/game-utils.js"></script>
+    <script src="../js/hangman.js"></script>
+</body>
+</html>

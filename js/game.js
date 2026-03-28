@@ -1,4 +1,33 @@
-// 游戏配置
+/**
+ * ==================== 俄羅斯方塊遊戲 ====================
+ * 
+ * 一款功能完整的經典俄羅斯方塊遊戲，採用HTML5 Canvas實現
+ * 
+ * 主要特性：
+ * - 支持 SRS (Super Rotation System) 旋轉系統
+ * - 幽靈方块預覽
+ * - 方块保存功能
+ * - 等級系統和計分規則
+ * - 鍵盤和觸控雙重支持
+ * - 音效系統
+ * 
+ * @author 遊戲開發團隊
+ * @version 2.0
+ * @since 2024-03-28
+ */
+
+/**
+ * 遊戲配置常數
+ * @const {Object} CONFIG
+ * @property {number} COLS - 遊戲板列數（10列）
+ * @property {number} ROWS - 遊戲板行數（20行）
+ * @property {number} BLOCK_SIZE - 單個方塊尺寸（30px）
+ * @property {number} INITIAL_SPEED - 初始下落速度（1000ms）
+ * @property {number} SPEED_DECREASE - 每層速度遞減值（50ms）
+ * @property {number} MIN_SPEED - 最小下落速度（100ms）
+ * @property {number} LINES_PER_LEVEL - 每升級所需消除行數（10行）
+ * @property {Object} POINTS - 計分規則
+ */
 const CONFIG = {
     COLS: 10,
     ROWS: 20,
@@ -8,16 +37,21 @@ const CONFIG = {
     MIN_SPEED: 100,
     LINES_PER_LEVEL: 10,
     POINTS: {
-        SOFT_DROP: 1,
-        HARD_DROP: 2,
-        SINGLE: 100,
-        DOUBLE: 300,
-        TRIPLE: 500,
-        TETRIS: 800
+        SOFT_DROP: 1,      // 輕按下落點數
+        HARD_DROP: 2,      // 快速下落點數（每格）
+        SINGLE: 100,       // 消除一行
+        DOUBLE: 300,       // 消除二行
+        TRIPLE: 500,       // 消除三行
+        TETRIS: 800        // 消除四行（滿貫）
     }
 };
 
-// 方块形状定义 (使用 SRS - Super Rotation System)
+/**
+ * 方塊形狀定義
+ * 包含7種標準俄羅斯方塊（I, O, T, S, Z, J, L）
+ * 使用 SRS (Super Rotation System) 標準旋轉系統
+ * @const {Object} SHAPES
+ */
 const SHAPES = {
     I: {
         shape: [
@@ -77,9 +111,18 @@ const SHAPES = {
     }
 };
 
-// 游戏类
+/**
+ * Tetris遊戲主類
+ * 負責遊戲邏輯、渲染和事件處理
+ * @class TetrisGame
+ */
 class TetrisGame {
+    /**
+     * 初始化遊戲實例
+     * @constructor
+     */
     constructor() {
+        // Canvas和繪圖上下文
         this.canvas = document.getElementById('gameBoard');
         this.ctx = this.canvas.getContext('2d');
         this.nextCanvas = document.getElementById('nextPiece');
@@ -87,6 +130,7 @@ class TetrisGame {
         this.holdCanvas = document.getElementById('holdPiece');
         this.holdCtx = this.holdCanvas.getContext('2d');
         
+        // 遊戲狀態
         this.board = this.createBoard();
         this.score = 0;
         this.lines = 0;
@@ -100,6 +144,7 @@ class TetrisGame {
         this.dropCounter = 0;
         this.lastTime = 0;
         this.soundEnabled = true;
+        this.highScore = 0;
         
         this.loadHighScore();
         this.initializeGame();
@@ -107,15 +152,27 @@ class TetrisGame {
         this.updateDisplay();
     }
     
+    /**
+     * 建立遊戲板（二維陣列）
+     * @returns {Array<Array<number|string>>} 初始化的遊戲板
+     */
     createBoard() {
         return Array(CONFIG.ROWS).fill(null).map(() => Array(CONFIG.COLS).fill(0));
     }
     
+    /**
+     * 初始化遊戲
+     * @private
+     */
     initializeGame() {
         this.nextPiece = this.randomPiece();
         this.spawnPiece();
     }
     
+    /**
+     * 生成隨機方塊
+     * @returns {Object} 新方塊對象，包含shape、color、x、y、type
+     */
     randomPiece() {
         const shapes = Object.keys(SHAPES);
         const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
@@ -128,6 +185,10 @@ class TetrisGame {
         };
     }
     
+    /**
+     * 生成新方塊到遊戲板
+     * @private
+     */
     spawnPiece() {
         this.currentPiece = this.nextPiece;
         this.nextPiece = this.randomPiece();
@@ -141,6 +202,13 @@ class TetrisGame {
         this.drawNextPiece();
     }
     
+    /**
+     * 檢測碰撞
+     * @param {Object} piece - 要檢測的方塊
+     * @param {number} offsetX - 水平偏移量
+     * @param {number} offsetY - 垂直偏移量
+     * @returns {boolean} 是否發生碰撞
+     */
     collision(piece = this.currentPiece, offsetX = 0, offsetY = 0) {
         for (let y = 0; y < piece.shape.length; y++) {
             for (let x = 0; x < piece.shape[y].length; x++) {
@@ -148,10 +216,12 @@ class TetrisGame {
                     const newX = piece.x + x + offsetX;
                     const newY = piece.y + y + offsetY;
                     
+                    // 檢查邊界
                     if (newX < 0 || newX >= CONFIG.COLS || newY >= CONFIG.ROWS) {
                         return true;
                     }
                     
+                    // 檢查與已有方塊的碰撞
                     if (newY >= 0 && this.board[newY][newX]) {
                         return true;
                     }
@@ -161,6 +231,10 @@ class TetrisGame {
         return false;
     }
     
+    /**
+     * 將當前方塊合併到遊戲板
+     * @private
+     */
     merge() {
         for (let y = 0; y < this.currentPiece.shape.length; y++) {
             for (let x = 0; x < this.currentPiece.shape[y].length; x++) {
@@ -175,6 +249,10 @@ class TetrisGame {
         }
     }
     
+    /**
+     * 旋轉當前方塊
+     * 應用 Wall Kick 機制以改進旋轉體驗
+     */
     rotate() {
         const rotated = this.currentPiece.shape[0].map((_, i) =>
             this.currentPiece.shape.map(row => row[i]).reverse()
@@ -183,7 +261,7 @@ class TetrisGame {
         const previousShape = this.currentPiece.shape;
         this.currentPiece.shape = rotated;
         
-        // Wall kick - 尝试多个位置
+        // Wall kick - 嘗試多個位置
         const kicks = [0, 1, -1, 2, -2];
         for (let kick of kicks) {
             if (!this.collision(this.currentPiece, kick, 0)) {
@@ -193,10 +271,15 @@ class TetrisGame {
             }
         }
         
-        // 如果所有位置都不行，恢复原状
+        // 如果所有位置都不行，恢復原狀
         this.currentPiece.shape = previousShape;
     }
     
+    /**
+     * 移動方塊
+     * @param {number} dir - 移動方向：-1（左）或 1（右）
+     * @returns {boolean} 是否成功移動
+     */
     move(dir) {
         this.currentPiece.x += dir;
         if (this.collision()) {
@@ -207,6 +290,10 @@ class TetrisGame {
         return true;
     }
     
+    /**
+     * 正常下落（軟下落）
+     * @private
+     */
     drop() {
         this.currentPiece.y++;
         if (this.collision()) {
@@ -222,6 +309,9 @@ class TetrisGame {
         this.updateDisplay();
     }
     
+    /**
+     * 快速下落（硬下落）
+     */
     hardDrop() {
         let dropDistance = 0;
         while (!this.collision(this.currentPiece, 0, 1)) {
@@ -237,6 +327,11 @@ class TetrisGame {
         this.updateDisplay();
     }
     
+    /**
+     * 清除已滿行
+     * @private
+     * @returns {number} 清除的行數
+     */
     clearLines() {
         let linesCleared = 0;
         const rowsToClear = [];
@@ -249,10 +344,10 @@ class TetrisGame {
         }
         
         if (linesCleared > 0) {
-            // 动画效果
+            // 動畫效果
             this.animateClearedLines(rowsToClear);
             
-            // 移除满行
+            // 移除滿行
             rowsToClear.forEach(row => {
                 this.board.splice(row, 1);
                 this.board.unshift(Array(CONFIG.COLS).fill(0));
@@ -264,6 +359,11 @@ class TetrisGame {
         return linesCleared;
     }
     
+    /**
+     * 清除行的動畫效果
+     * @private
+     * @param {Array<number>} rows - 要清除的行號陣列
+     */
     animateClearedLines(rows) {
         rows.forEach(row => {
             for (let x = 0; x < CONFIG.COLS; x++) {
@@ -273,6 +373,11 @@ class TetrisGame {
         this.draw();
     }
     
+    /**
+     * 更新遊戲分數和等級
+     * @private
+     * @param {number} linesCleared - 消除的行數
+     */
     updateScore(linesCleared) {
         if (linesCleared > 0) {
             const points = [0, CONFIG.POINTS.SINGLE, CONFIG.POINTS.DOUBLE, 
@@ -280,7 +385,7 @@ class TetrisGame {
             this.score += points[linesCleared] * this.level;
             this.lines += linesCleared;
             
-            // 升级检查
+            // 升級檢查
             const newLevel = Math.floor(this.lines / CONFIG.LINES_PER_LEVEL) + 1;
             if (newLevel > this.level) {
                 this.level = newLevel;
@@ -295,6 +400,9 @@ class TetrisGame {
         }
     }
     
+    /**
+     * 保存或交換當前方塊
+     */
     hold() {
         if (!this.canHold) return;
         
@@ -316,6 +424,11 @@ class TetrisGame {
         this.drawHoldPiece();
     }
     
+    /**
+     * 計算當前下落速度
+     * @private
+     * @returns {number} 下落速度（毫秒）
+     */
     getDropSpeed() {
         return Math.max(
             CONFIG.MIN_SPEED,
@@ -698,5 +811,23 @@ class TetrisGame {
 // 初始化游戏
 let game;
 window.addEventListener('DOMContentLoaded', () => {
-    game = new TetrisGame();
+    try {
+        const canvas = document.getElementById('gameBoard');
+        if (!canvas) {
+            console.error('Canvas element gameBoard not found');
+            alert('遊戲初始化失敗：缺少遊戲板元素');
+            return;
+        }
+        
+        const startBtn = document.getElementById('startButton');
+        if (!startBtn) {
+            console.error('Start button not found');
+        }
+        
+        game = new TetrisGame();
+        console.log('Tetris game initialized successfully');
+    } catch (error) {
+        console.error('Failed to initialize Tetris game:', error);
+        alert('遊戲初始化失敗：' + error.message);
+    }
 });

@@ -4,14 +4,91 @@
     box-sizing: border-box;
 }
 
+/* ==================== 遊戲導航條 ==================== */
+.game-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(15, 15, 30, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 1rem 2rem;
+    z-index: 1000;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-left, .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.back-btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    color: white;
+    text-decoration: none;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.back-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+}
+
+.nav-center {
+    flex: 1;
+    text-align: center;
+}
+
+.header-title {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.theme-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.theme-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(102, 126, 234, 0.6);
+}
+
 body {
     font-family: 'Noto Sans TC', 'Microsoft JhengHei', '微軟正黑體', 'PingFang TC', 'Apple LiGothic Medium', sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     padding: 20px;
+    padding-top: 80px;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     animation: gradientShift 10s ease infinite;
     background-size: 200% 200%;
     -webkit-font-smoothing: antialiased;
@@ -569,9 +646,38 @@ body {
         order: -1;
         width: 100%;
     }
+
+    .game-navbar {
+        padding: 0.75rem 1rem;
+    }
+
+    .header-title {
+        font-size: 1.2rem;
+    }
+
+    .back-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
 }
 
 @media (max-width: 768px) {
+    .game-navbar {
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 0.75rem;
+    }
+
+    .nav-left, .nav-right {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .nav-center {
+        order: 3;
+        flex-basis: 100%;
+    }
+
     .header h1 {
         font-size: 2em;
     }

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏓 Pong 乒乓球</title>
+    <meta name="description" content="經典乒乓球遊戲，挑戰AI對手">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/globals.css">
+    <link rel="stylesheet" href="../styles/mobile-optimize.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%);
+            color: #fff;
+            font-family: 'Noto Sans TC', sans-serif;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 0.5rem 0;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle { color: #aaa; font-size: 1rem; }
+        
+        .game-info {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .score-box {
+            background: rgba(79, 172, 254, 0.2);
+            border: 1px solid #4facfe;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            min-width: 140px;
+        }
+        
+        .score-label { font-size: 0.9rem; color: #aaa; }
+        .score-value { font-size: 2.5rem; font-weight: bold; color: #4facfe; }
+        
+        #gameCanvas {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            border: 2px solid #4facfe;
+            border-radius: 1rem;
+            margin: 2rem auto;
+            display: block;
+            max-width: 100%;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4);
+        }
+        
+        .instructions {
+            background: rgba(79, 172, 254, 0.1);
+            border: 1px solid #4facfe;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏓 Pong</h1>
+            <p class="subtitle">經典乒乓球遊戲 vs AI對手</p>
+        </div>
+        
+        <div class="game-info">
+            <div class="score-box">
+                <div class="score-label">你的分數</div>
+                <div class="score-value" id="playerScore">0</div>
+            </div>
+            <div class="score-box">
+                <div class="score-label">AI 分數</div>
+                <div class="score-value" id="aiScore">0</div>
+            </div>
+        </div>
+        
+        <canvas id="gameCanvas" width="700" height="400"></canvas>
+        
+        <div class="instructions">
+            <p><strong>📱 操作方式：</strong></p>
+            <p>方向鍵上下 或 滑鼠移動 來控制球拍</p>
+            <p>第一次點擊遊戲區域啟動遊戲</p>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn" id="startBtn">▶️ 開始遊戲</button>
+            <button class="control-btn" id="resetBtn">🔄 重置分數</button>
+        </div>
+    </div>
+
+    <script src="../lib/game-utils.js"></script>
+    <script src="../js/pong.js"></script>
+</body>
+</html>

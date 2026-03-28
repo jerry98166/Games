@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐍 貪食蛇 - 經典遊戲 | Snake</title>
+    <meta name="description" content="經典貪食蛇遊戲，簡單上手卻富有挑戰">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="globals.css">
+    <link rel="stylesheet" href="mobile-optimize.css">
+    <style>
+        .game-navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            gap: 1rem;
+        }
+        
+        .nav-left { flex: 1; }
+        .nav-center { flex: 1; text-align: center; }
+        .nav-right { flex: 1; text-align: right; }
+        
+        .back-btn, .theme-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover, .theme-btn:hover {
+            background: rgba(255,255,255,0.4);
+        }
+        
+        .header-title { color: white; margin: 0; font-size: 1.5rem; }
+        
+        body {
+            background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%);
+            color: #fff;
+            font-family: 'Noto Sans TC', sans-serif;
+            padding-top: 80px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            color: #aaa;
+            font-size: 1.1rem;
+            margin: 0.5rem 0 1rem 0;
+        }
+        
+        .game-badges {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        
+        .badge {
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid #667eea;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+        }
+        
+        .game-wrapper {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .info-section {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            min-width: 250px;
+        }
+        
+        .info-section h3 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-label { font-size: 0.9rem; color: #aaa; }
+        .stat-value { font-weight: bold; font-size: 1.2rem; color: #667eea; }
+        
+        #gameCanvas {
+            border: 2px solid #667eea;
+            background: #000;
+            border-radius: 0.5rem;
+            display: block;
+            margin: 1rem auto;
+            max-width: 100%;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .mobile-controls {
+            display: none;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .mobile-controls .mobile-btn {
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .mobile-controls .mobile-btn:active {
+            transform: scale(0.95);
+        }
+        
+        @media (max-width: 768px) {
+            .game-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .mobile-controls {
+                display: grid;
+            }
+            
+            #gameCanvas {
+                max-width: 90vw;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 導航條 -->
+    <nav class="game-navbar">
+        <div class="nav-left">
+            <a href="../index.html" class="back-btn">← 返回主頁</a>
+        </div>
+        <div class="nav-center">
+            <h1 class="header-title">🐍 貪食蛇</h1>
+        </div>
+        <div class="nav-right">
+            <button id="soundToggle" class="theme-btn">🔊</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>🐍 貪食蛇</h1>
+            <p class="subtitle">經典遊戲 · 簡單上手卻富有挑戰</p>
+            <div class="game-badges">
+                <span class="badge">✨ 完全免費</span>
+                <span class="badge">🎯 無廣告</span>
+                <span class="badge">📱 支援觸控</span>
+            </div>
+        </div>
+        
+        <div class="game-wrapper">
+            <div class="info-section">
+                <h3>📊 遊戲統計</h3>
+                <div class="stat-item">
+                    <span class="stat-label">分數</span>
+                    <span class="stat-value" id="score">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">最高分</span>
+                    <span class="stat-value" id="highScore">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">蛇長度</span>
+                    <span class="stat-value" id="snakeLength">1</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">速度</span>
+                    <span class="stat-value" id="speed">1x</span>
+                </div>
+            </div>
+            
+            <div style="flex: 1; min-width: 300px; max-width: 600px;">
+                <canvas id="gameCanvas" width="400" height="400"></canvas>
+                <div class="controls">
+                    <button class="control-btn" id="startBtn">🎮 開始</button>
+                    <button class="control-btn" id="pauseBtn">⏸️ 暫停</button>
+                    <button class="control-btn" id="restartBtn">🔄 重新開始</button>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3>⌨️ 控制方式</h3>
+                <div style="font-size: 0.9rem; line-height: 1.8;">
+                    <p><strong>方向鍵</strong> - 控制蛇的方向</p>
+                    <p><strong>W/A/S/D</strong> - 上/左/下/右</p>
+                    <p><strong>Space</strong> - 暫停/繼續</p>
+                    <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);"><strong>💡 提示</strong></p>
+                    <p>🍎 吃掉食物增加長度</p>
+                    <p>⚠️ 不要碰到牆壁或自己</p>
+                    <p>⚡ 吃越多食物越快</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 移動端控制 -->
+        <div class="mobile-controls" id="mobileControls">
+            <button class="mobile-btn" id="btnUp">⬆️</button>
+            <button class="mobile-btn" id="btnDown">⬇️</button>
+            <button class="mobile-btn" id="btnLeft">⬅️</button>
+            <button class="mobile-btn" id="btnRight">➡️</button>
+        </div>
+    </div>
+
+    <script src="../js/snake.js"></script>
+</body>
+</html>
